@@ -27,13 +27,31 @@ public class Player : MonoBehaviour
     private bool isGrounded; //se estiver no chao, fica verdadeiro
     private bool recovery; //se estiver piscando nao pode tomar outro dano
 
+    public static Player instance; //geramos um acessador estatico para o player
+
+    private void Awake()
+    {
+        //o trecho abaixo verifica se já existe um objeto do player na cena. Caso sim, destroi a copia.
+        //caso nao, chama o dondestroyonload para o objeto ser mantido na cena
+        //isso evitara duplicacoes do objeto do player
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(instance.gameObject);
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         lifeText.text = life.ToString(); //ao iniciar, o texto da vida recebe o total de vida inicial
         Time.timeScale = 1; //resetamos o tempo do jogo para 1
-
-        DontDestroyOnLoad(gameObject); //mantém o objetivo ativo ao passar de cena
     }
 
     // Update is called once per frame
